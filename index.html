@@ -377,8 +377,10 @@ const STRIPE_LINKS = {};
 // Paste the Stripe Customer Portal link here to turn on the "Manage billing" button:
 const STRIPE_PORTAL_URL = "";
 
-// Plans sellable right now = those with a payment link configured.
-const SELLABLE_PLANS = PLANS.filter(p => STRIPE_LINKS[p.id]);
+// STAGING: show every plan so the picker renders in full. Selecting one is safe —
+// subscribe() refuses any plan without a payment link, and none are configured here,
+// so no live checkout is reachable.
+const SELLABLE_PLANS = PLANS;
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const fmt$ = n => "$" + (Number(n)||0).toFixed(2);
@@ -3271,7 +3273,7 @@ function Settings({ tenant, user, userRole, qboConnected, settings, onClose, onQ
               <div style={{marginTop:12}}>
                 <div className="settings-sub">Subscribe or change plan:</div>
                 <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {PLANS.filter(pl => STRIPE_LINKS[pl.id]).map((pl, _i, arr) => (
+                  {PLANS.map((pl, _i, arr) => (
                     <button key={pl.id} className="btn btn-primary btn-sm" onClick={()=>subscribe(pl.id)}>
                       {arr.length > 1 ? `${pl.name} — $${pl.price}/mo` : `Subscribe — $${pl.price}/mo`}
                     </button>
